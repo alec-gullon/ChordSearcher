@@ -47,8 +47,8 @@ class ChordSearcher {
         while($this->neckSection->barPosition <= 12) {
             $notesMatrix = new NotesMatrix($this->neckSection->notes);
             $notesMatrix->buildMatchingCoordinates($this->notes);
-            $notesMatrix->buildAdmissibleCoordinateSets($this->notes);
-            $coordinateSets = $notesMatrix->coordinateSets;
+            $notesMatrix->buildLargestCoordinateSets($this->notes);
+            $coordinateSets = $notesMatrix->largestCoordinateSets;
 
             foreach($coordinateSets as $coordinateSet) {
                 $diagrams[] = new ChordDiagram($this->neckSection->barPosition, $coordinateSet);

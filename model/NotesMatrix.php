@@ -6,7 +6,7 @@ namespace App\Model;
  * Class that identifies potential chord voicings amongst a four fret segment of
  * neck, open notes and muted strings
  *
- * @
+ * @todo this class is getting a bit bloated. Coordinate set is definitely a candidate for a new class!
  */
 
 class NotesMatrix {
@@ -20,8 +20,10 @@ class NotesMatrix {
 
     public $coordinateSets = [];
 
+    public $largestCoordinateSets = [];
+
     /**
-     * The augmented notes, a 6 by 6 multidimensional array.
+     * The augmented notes, a 5 x 6 multidimensional array.
      *
      * Row 1:       Open Notes
      * Row 2-5:     Four segment section of neck
@@ -84,10 +86,38 @@ class NotesMatrix {
     }
 
     /**
+     * Sorts through the admissible coordinate sets and picks out the largest possible parent
+     * voicings for each
+     *
+     * @param $notes
+     */
+    public function buildLargestCoordinateSets($notes) {
+
+        $this->buildAdmissibleCoordinateSets($notes);
+
+        for($i = 0; $i < count($this->coordinateSets); $i++) {
+            $validParent = true;
+            $parent = $this->coordinateSets[$i];
+            for($j = $i+1; $j < count($this->coordinateSets); $j++) {
+                if($this->containedIn($parent, $this->coordinateSets[$j])) {
+                    $validParent = false;
+                    break;
+                }
+            }
+            if($validParent) {
+                $this->largestCoordinateSets[] = $parent;
+            }
+        }
+
+    }
+
+    /**
+     * @todo split into smaller methods
      * Determines if a coordinate set produces an admissible chord. Conditions to be admissible:
      *
      *      - All notes are played at least once
      *      - No two notes lie on same string
+     *      - Has to have a note on the first bar (otherwise, will be repeated)
      *
      * @param $coordinateSet
      * @return bool
@@ -100,6 +130,7 @@ class NotesMatrix {
 
         $accountedNotes = [];
         $accountedStrings = [];
+        $firstFretAccounted = false;
 
         if(count($coordinateSet) < count($notes)+1 ) {
             return true;
@@ -116,6 +147,14 @@ class NotesMatrix {
             if( !in_array($note, $accountedNotes) ) {
                 $accountedNotes[] = $note;
             }
+
+            if($coordinate[0] === 2) {
+                $firstFretAccounted = true;
+            }
+        }
+
+        if(!$firstFretAccounted) {
+            return true;
         }
 
         if( count($accountedNotes) !== count($notes) ) {
@@ -123,6 +162,19 @@ class NotesMatrix {
         }
 
         return false;
+    }
+
+    private function containedIn($set1, $set2) {
+        if(count($set1) > count($set2)) {
+            return false;
+        }
+
+        for($i = 0; $i < count($set1); $i++) {
+            if(!in_array($set1[$i], $set2)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

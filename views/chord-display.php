@@ -6,10 +6,11 @@ require __DIR__ . '/layouts/header.php';
 require __DIR__ . '/partials/form.php';
 ?>
 
+<div class="chord-diagrams">
+
 <?php foreach($diagrams as $diagram): $data = $diagram->viewData(); ?>
 
     <div class="chord-diagram">
-        <?php echo $data['bar']; ?>
         <?php foreach($data['strings'] as $string): ?>
             <div class="chord-diagram-string">
                 <?php for($i = 5; $i >= 2; $i--): ?>
@@ -34,6 +35,8 @@ require __DIR__ . '/partials/form.php';
     </div>
 
 <?php endforeach; ?>
+
+</div>
 
 <?php
 require __DIR__ . '/layouts/footer.php';
