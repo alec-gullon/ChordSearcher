@@ -6,21 +6,44 @@ namespace App\Model;
  * Class that identifies potential chord voicings amongst a four fret segment of
  * neck, open notes and muted strings
  *
- * @todo this class is getting a bit bloated. Coordinate set is definitely a candidate for a new class!
+ * @property array  $notes
+ * @property array  $matchingCoordinates
+ * @property array  $admissibleCoordinates
+ * @property array  $maximalCoordinateSets
+ * @property array  $augmentedNotes
+ *
+ * @todo this class is getting a bit bloated. Coordinate set is definitely a candidate for a new class...
  */
 
 class NotesMatrix {
 
     /**
-     * @todo
+     * The notes to search through the matrix for matches
+     *
+     * @var array
+     */
+    private $notes;
+
+    /**
+     * The coordinates that are matched to the given notes
      *
      * @var array
      */
     private $matchingCoordinates = [];
 
-    public $coordinateSets = [];
+    /**
+     * The subsets of coordinates that produce chords that satisfy the requirements
+     *
+     * @var array
+     */
+    private $admissibleCoordinateSets = [];
 
-    public $largestCoordinateSets = [];
+    /**
+     * The subsets of coordinates that are admissible and contain no smaller admissible subchord
+     *
+     * @var array
+     */
+    private $maximalCoordinateSets = [];
 
     /**
      * The augmented notes, a 5 x 6 multidimensional array.
@@ -33,26 +56,43 @@ class NotesMatrix {
     public $augmentedNotes = [];
 
     /**
-     * @todo
-     * @param $matrix
+     * Combine the open notes with the array of notes given in the specified
+     * region of the neck
+     *
+     * @param array    $matrix
+     * @param array    $notes
      */
-    public function __construct($matrix) {
-        $this->augmentedNotes[1] = OPEN_NOTES;
-        for($i = 2; $i <= count($matrix)+1; $i++) {
-            $this->augmentedNotes[$i] = $matrix[$i-1];
+    public function __construct($matrix, $notes) {
+        foreach(OPEN_NOTES as $note) {
+            $this->augmentedNotes[1][] = $note['note'];
         }
+        for($i = 2; $i <= count($matrix)+1; $i++) {
+            $this->augmentedNotes[$i] = $matrix[$i-2];
+        }
+
+        $this->notes = $notes;
     }
 
     /**
-     * Loops through every node in the $augmentedNotes array and find matches to
-     * the provided $notes array
+     * Creates the final set of maximal coordinate sets
      *
-     * @param $notes
+     * @return array
      */
-    public function buildMatchingCoordinates($notes) {
+    public function getCoordinateSets() {
+        $this->buildMatchingCoordinates();
+        $this->buildAdmissibleCoordinateSets();
+        $this->buildMaximalCoordinateSets();
+        return $this->maximalCoordinateSets;
+    }
+
+    /**
+     * Loops through every node in the augmentedNotes array and find matches to
+     * the provided set of notes.
+     */
+    private function buildMatchingCoordinates() {
         for($i = 1; $i <= 5; $i++){
             for($j = 0; $j <= 5; $j++) {
-                if ( in_array($this->augmentedNotes[$i][$j], $notes) ) {
+                if ( in_array($this->augmentedNotes[$i][$j], $this->notes) ) {
                     $this->matchingCoordinates[] = [$i,$j];
                 }
             }
@@ -63,10 +103,8 @@ class NotesMatrix {
      * Builds the coordinate sets that could represent a physically playable
      * chord. Uses a binary representation of integers from 0 to 2^(#matchingCoordinates)
      * to cycle through all possible permutations of matching coordinates
-     *
-     * @param $notes
      */
-    public function buildAdmissibleCoordinateSets($notes) {
+    private function buildAdmissibleCoordinateSets() {
         for($i = 0; $i < pow(2, count($this->matchingCoordinates)); $i++) {
             // split $i into its binary digits
             $binary = decbin($i);
@@ -78,92 +116,129 @@ class NotesMatrix {
                     $coordinateSet[] = $this->matchingCoordinates[$j];
                 }
             }
-            if($this->isRedundant($coordinateSet, $notes)){
+            if($this->isRedundant($coordinateSet)){
                 continue;
             }
-            $this->coordinateSets[] = $coordinateSet;
+            $this->admissibleCoordinateSets[] = $coordinateSet;
         }
     }
 
     /**
      * Sorts through the admissible coordinate sets and picks out the largest possible parent
      * voicings for each
-     *
-     * @param $notes
      */
-    public function buildLargestCoordinateSets($notes) {
+    private function buildMaximalCoordinateSets() {
 
-        $this->buildAdmissibleCoordinateSets($notes);
-
-        for($i = 0; $i < count($this->coordinateSets); $i++) {
+        for($i = 0; $i < count($this->admissibleCoordinateSets); $i++) {
             $validParent = true;
-            $parent = $this->coordinateSets[$i];
-            for($j = $i+1; $j < count($this->coordinateSets); $j++) {
-                if($this->containedIn($parent, $this->coordinateSets[$j])) {
+            $parent = $this->admissibleCoordinateSets[$i];
+            for($j = $i+1; $j < count($this->admissibleCoordinateSets); $j++) {
+                if($this->containedIn($parent, $this->admissibleCoordinateSets[$j])) {
                     $validParent = false;
                     break;
                 }
             }
             if($validParent) {
-                $this->largestCoordinateSets[] = $parent;
+                $this->maximalCoordinateSets[] = $parent;
             }
         }
 
     }
 
     /**
-     * @todo split into smaller methods
      * Determines if a coordinate set produces an admissible chord. Conditions to be admissible:
      *
      *      - All notes are played at least once
      *      - No two notes lie on same string
      *      - Has to have a note on the first bar (otherwise, will be repeated)
      *
-     * @param $coordinateSet
+     * @param array   $coordinateSet
+     *
      * @return bool
      */
-    private function isRedundant($coordinateSet, $notes) {
+    private function isRedundant($coordinateSet) {
 
-        if(count($coordinateSet) > 6) {
+        if( count($coordinateSet) > 6 || count($coordinateSet) < count($this->notes) ) {
             return true;
         }
 
-        $accountedNotes = [];
-        $accountedStrings = [];
-        $firstFretAccounted = false;
-
-        if(count($coordinateSet) < count($notes)+1 ) {
-            return true;
-        }
-
-        foreach($coordinateSet as $coordinate) {
-            $string = $coordinate[1];
-            if( in_array($string, $accountedStrings) ) {
+        $strings = $this->numberOfNotesOnString($coordinateSet);
+        foreach($strings as $string) {
+            if( $string > 1 ) {
                 return true;
             }
-            $accountedStrings[] = $string;
-
-            $note = $this->augmentedNotes[$coordinate[0]][$coordinate[1]];
-            if( !in_array($note, $accountedNotes) ) {
-                $accountedNotes[] = $note;
-            }
-
-            if($coordinate[0] === 2) {
-                $firstFretAccounted = true;
-            }
         }
 
-        if(!$firstFretAccounted) {
+        $frets = $this->playedFrets($coordinateSet);
+        if( !in_array(2, $frets)) {
             return true;
         }
 
-        if( count($accountedNotes) !== count($notes) ) {
+        $playedNotes = $this->playedNotes($coordinateSet);
+        if( count($playedNotes) !== count($this->notes) ) {
             return true;
         }
+
 
         return false;
     }
 
+    /**
+     * Determines the number of of notes on a string for a given coordinate set
+     *
+     * @param array     $coordinateSet
+     *
+     * @return array
+     */
+    private function numberOfNotesOnString($coordinateSet) {
+        $count = [0,0,0,0,0,0];
+        foreach($coordinateSet as $coordinate) {
+            $count[$coordinate[1]]++;
+        }
+        return $count;
+    }
+
+    /**
+     * Determines the frets that have been played for a given coordinate set
+     *
+     * @param array     $coordinateSet
+     * @return array
+     */
+    private function playedFrets($coordinateSet) {
+        $frets = [];
+        foreach($coordinateSet as $coordinate) {
+            $frets[] = $coordinate[0];
+        }
+        return $frets;
+    }
+
+    /**
+     * Determines the notes that have been played for a given coordinate set
+     *
+     * @param array     $coordinateSet
+     * @return array
+     */
+    private function playedNotes($coordinateSet) {
+        $notes = [];
+        foreach($coordinateSet as $coordinate) {
+            $fret = $coordinate[0];
+            $string = $coordinate[1];
+            if( !in_array($this->augmentedNotes[$fret][$string], $notes) ){
+                $notes[] = $this->augmentedNotes[$fret][$string];
+            }
+        }
+        return $notes;
+    }
+
+    /**
+     * Determines if the first set is contained as a subset of the second set
+     *
+     * @todo needs to be moved to a general helper function, this isn't the responsibility of NotesMatrix...
+     *
+     * @param array     $set1
+     * @param array     $set2
+     * @return bool
+     */
     private function containedIn($set1, $set2) {
         if(count($set1) > count($set2)) {
             return false;

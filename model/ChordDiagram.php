@@ -3,23 +3,30 @@
 namespace App\Model;
 
 /**
- * Models a Chord diagram that is output to the view
+ * Models a Chord diagram
  *
- * @package App\Model
+ * @property int    $bar
+ * @property array  $coordinates
+ *
  */
 
 class ChordDiagram {
 
     /**
-     * @todo
+     * The position of the first barred fret
      *
      * @var int
      */
     public $bar = 1;
 
     /**
-     * @todo
-     * @var
+     * Array of coordinates of notes that need to be held down. A coordinate is
+     * of form [x,y], where:
+     *
+     *  - x = 1,..,5 represent fret (1 represents open string)
+     *  - y = 0,...5 represents string, from low to high
+     *
+     * @var array
      */
     public $coordinates;
 
@@ -28,6 +35,11 @@ class ChordDiagram {
         $this->coordinates = $coordinates;
     }
 
+    /**
+     * The data needed to render a chord diagram.
+     *
+     * @return array
+     */
     public function viewData() {
         $data = [];
 
@@ -36,13 +48,21 @@ class ChordDiagram {
             $fret = $this->determineStringPosition($i);
             $data['strings'][] = [
                 'fret' => $fret,
-                'label'=> OPEN_NOTES[$i],
+                'label'=> OPEN_NOTES[$i]['label'],
             ];
             $data['bar'] = $this->bar;
         }
         return $data;
     }
 
+    /**
+     * Determines the strings fret position in the diagram. A string that is not played is
+     * represented with position 0
+     *
+     * @param int   $string
+     *
+     * @return int
+     */
     private function determineStringPosition($string) {
         foreach($this->coordinates as $coordinate) {
             if($coordinate[1] === $string) {

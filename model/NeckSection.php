@@ -5,48 +5,48 @@ namespace App\Model;
 /**
  * Class that models a four fret section of the guitar neck
  *
- * @package App\Model
+ * @property int                            $bar
+ * @property array                          $notes
+ * @property \App\Factories\FretFactory     $fretFactory
  */
 
 class NeckSection {
 
     /**
-     * Where the bar is, integer expected value 1-12
+     * Where the bar is, expected value 1-12
      *
      * @var int
      */
-    public $barPosition = 1;
+    public $bar;
 
     /**
-     * A multidimensional array that contains the notes in the region of the
-     * neck. Rows correspond to frets, columns to strings e.g, [2][4] is
-     * the second fret from the bar, 4th string (G string)
+     * The set of four frets that define the neck section region
      *
      * @var array
      */
     public $notes = [];
 
-    public function __construct() {
-        $this->determineNotes();
-    }
+    /**
+     * Factory to make frets
+     *
+     * @var \App\Factories\FretFactory
+     */
+    private $fretFactory;
 
     /**
-     * Advances the bar and updates the notes in that section of the bar
+     * Set up the notes as a multi-dimensional array
+     *
+     * @param int                           $bar
+     * @param \App\Factories\FretFactory    $fretFactory
      */
-    public function advanceBar() {
-        $this->barPosition++;
-        $this->determineNotes();
-    }
+    public function __construct($bar, $fretFactory) {
+        $this->bar = $bar;
 
-    /**
-     * Determines the notes based on the current position of the bar
-     */
-    public function determineNotes() {
-        $notes = [];
-        for ($i = 1; $i <= 4; $i++) {
-            $notes[$i] = barNotes($this->barPosition+($i-1));
+        for($i = 0; $i <= 3; $i++) {
+            $fret = $fretFactory->makeFret($bar+$i);
+            $this->notes[] = $fret->notes;
         }
-        $this->notes = $notes;
-    }
 
+        $this->fretFactory = $fretFactory;
+    }
 }

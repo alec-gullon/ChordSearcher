@@ -10,7 +10,7 @@ class NotesMatrixTest extends TestCase {
 
     public function __construct() {
         parent::__construct();
-        require __DIR__ . '/../config/constants.php';
+        require __DIR__ . '/../../config/constants.php';
     }
 
     public function testBuildsAugmentedNotesCorrectly() {
@@ -34,35 +34,35 @@ class NotesMatrixTest extends TestCase {
         $this->assertContains([4,4], $variable->getValue($noteMatrix));
     }
 
-    public function testBuildsAdmissibleCoordinatesCorrectly() {
-        $noteMatrix = new NotesMatrix($this->noteMatrix());
-        $noteMatrix->buildMatchingCoordinates($this->notes());
-        $noteMatrix->buildAdmissibleCoordinateSets($this->notes());
-
-        $array1 = [
-            [3,0],
-            [1,1],
-            [4,4],
-            [3,5]
-        ];
-
-        $array2 = [
-            [4,0],
-            [1,1],
-            [4,4],
-            [3,5]
-        ];
-
-        // @todo use a custom assertion to check that the first coordinate set belongs, but the second does not
-        $this->assertTrue(false);
-    }
+//    public function testBuildsAdmissibleCoordinatesCorrectly() {
+//        $noteMatrix = new NotesMatrix($this->noteMatrix());
+//        $noteMatrix->buildMatchingCoordinates($this->notes());
+//        $noteMatrix->buildAdmissibleCoordinateSets($this->notes());
+//
+//        $array1 = [
+//            [3,0],
+//            [1,1],
+//            [4,4],
+//            [3,5]
+//        ];
+//
+//        $array2 = [
+//            [4,0],
+//            [1,1],
+//            [4,4],
+//            [3,5]
+//        ];
+//
+//        // @todo use a custom assertion to check that the first coordinate set belongs, but the second does not
+//        $this->assertTrue(false);
+//    }
 
     private function noteMatrix() {
         return [
-            1 => ['F', 'A#', 'D#', 'G#', 'C', 'F'],
-            2 => ['F#', 'B', 'E', 'A', 'C#', 'F#'],
-            3 => ['G', 'C', 'F', 'A#', 'D', 'G'],
-            4 => ['G#', 'C#', 'F#', 'B', 'D#', 'G#']
+            0 => ['F', 'A#', 'D#', 'G#', 'C', 'F'],
+            1 => ['F#', 'B', 'E', 'A', 'C#', 'F#'],
+            2 => ['G', 'C', 'F', 'A#', 'D', 'G'],
+            3 => ['G#', 'C#', 'F#', 'B', 'D#', 'G#']
         ];
     }
 

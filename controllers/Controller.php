@@ -4,6 +4,20 @@ namespace App\Controllers;
 
 class Controller {
 
+    public $stringFactory;
+
+    public function __construct($stringFactory) {
+        $this->stringFactory = $stringFactory;
+    }
+
+    /**
+     * Displays the initial note entry to the user
+     */
+    public function index() {
+        $formData = $this->buildFormData();
+        require __DIR__ . '/../views/home.php';
+    }
+
     /**
      * Creates all possible chords based on notes selected by a user
      *
@@ -13,7 +27,26 @@ class Controller {
     public function getChords($chordSearcher, $request) {
         $chordSearcher->setNotes($request['notes']);
         $diagrams = $chordSearcher->trawlNeck();
+        $formData = $this->buildFormData();
         require __DIR__ . '/../views/chord-display.php';
+    }
+
+    /**
+     * Creates the data for the chord entry form
+     *
+     * @return  array
+     */
+    private function buildFormData() {
+        $strings = $this->stringFactory->allStrings();
+
+        $data['strings'] = [];
+        foreach($strings as $string) {
+            $data['strings'][$string->label] = [
+                'label' => $string->label,
+                'notes' => $string->notes()
+            ];
+        }
+        return $data;
     }
 
 }
