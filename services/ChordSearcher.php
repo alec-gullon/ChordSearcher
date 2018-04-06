@@ -62,7 +62,7 @@ class ChordSearcher {
      */
     public function setNotes($notes) {
         foreach($notes as $note) {
-            if( !in_array($note, $this->notes)) {
+            if( !in_array($note, $this->notes) ) {
                 $this->notes[] = $note;
             }
         }

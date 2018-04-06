@@ -50,8 +50,8 @@ class ChordDiagram {
                 'fret' => $fret,
                 'label'=> OPEN_NOTES[$i]['label'],
             ];
-            $data['bar'] = $this->bar;
         }
+        $data['bar'] = $this->bar;
         return $data;
     }
 

@@ -24,5 +24,4 @@ $chordSearcher = new ChordSearcher($neckSectionFactory, $notesMatrixFactory, $ch
 
 $stringFactory = new StringFactory();
 $controller = new Controller($stringFactory);
-$_POST['notes'] = ['F#','A','D'];
-$controller->getChords($chordSearcher, $_POST);
+$controller->getChords($chordSearcher, $_GET);

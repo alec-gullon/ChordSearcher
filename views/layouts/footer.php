@@ -1,4 +1,7 @@
 
 </div> <!-- End .site-wrapper -->
-</head>
+
+<script src="/js/app.js"></script>
+
+</body>
 </html>

@@ -4,7 +4,19 @@
     margin: 0;
 }
 
+.site-header {
+    text-align: center;
+    padding: 3rem;
+}
+
 .main-form {
+    position: relative;
+}
+.main-form-strings {
+    position: relative;
+    border-top: 2px solid saddlebrown;
+    border-bottom: 2px solid saddlebrown;
+    background: beige;
 }
 .main-form-string-wrapper {
     height: 3rem;
@@ -13,26 +25,15 @@
 .main-form-string {
     position: absolute;
     width: 100%;
-    top: 23px;
     left: 0;
     height: 2px;
     background: gold;
     z-index: 10;
 }
 
-.chord-diagrams {
-    width: 84rem;
-    margin: 6rem auto;
-}
-
 .chord-diagram {
-    height: 18rem;
-    width: 36rem;
-    float: left;
-    margin-bottom: 6rem;
-    margin-right: 8rem;
+    margin: 4rem auto;
 }
-
 .chord-diagrams .chord-diagram:nth-child(2n) {
     margin-right: 0rem;
 }
@@ -63,16 +64,11 @@
     border: 1px solid black;
 }
 
-body {
-    padding: 3rem;
-}
-
-
 .main-form-fret {
     display: block;
     position: relative;
     height: 100%;
-    width: 4rem;
+    width: 6.66%;
     display: inline-block;
     background: beige;
     border-left: 2px solid silver;
@@ -82,10 +78,7 @@ body {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-}
-
-.main-form-string-wrapper .main-form-fret:nth-last-child(2) {
-    background: none;
+    margin-right: -4px;
 }
 
 /* Hide the browser's default radio button */
@@ -98,14 +91,15 @@ body {
 .main-form-fret__radio {
     position: absolute;
     top: .6rem;
-    left: -0.75rem;
-    height: 25px;
-    width: 25px;
+    left: -1rem;
+    height: 21px;
+    width: 21px;
     background-color: #222;
     border-radius: 50%;
     display: none;
-    text-indent: -30px;
+    text-indent: -35px;
     z-index: 20;
+    line-height: 21px;
 }
 
 /* On mouse-over, add a grey background color */
@@ -132,10 +126,105 @@ body {
 
 /* Style the indicator (dot/circle) */
 .main-form-fret .main-form-fret__radio:after {
-    top: 9px;
-    left: 9px;
+    top: 7px;
+    left: 7px;
     width: 8px;
     height: 8px;
     border-radius: 50%;
     background: white;
+}
+
+.main-form-fret-muted {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 93.24%;
+    height: 100%;
+    width: 6.66%;
+    display: inline-block;
+    background: beige;
+    border-left: 2px solid silver;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    margin-right: -4px;
+}
+
+/* Hide the browser's default radio button */
+.main-form-fret-muted input {
+    position: absolute;
+    opacity: 0;
+}
+
+/* Create a custom radio button */
+.main-form-fret-muted__radio {
+    position: absolute;
+    top: .6rem;
+    left: -1rem;
+    height: 21px;
+    width: 21px;
+    border-radius: 50%;
+    display: none;
+    text-indent: 2px;
+    z-index: 20;
+    line-height: 21px;
+}
+
+/* On mouse-over, add a grey background color */
+.main-form-fret-muted:hover input ~ .main-form-fret-muted__radio {
+    background: none;
+    display: none;
+}
+
+/* When the radio button is checked, add a blue background */
+.main-form-fret-muted input:checked ~ .main-form-fret-muted__radio {
+    display: block;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.main-form-fret-muted__radio:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.main-form-fret-muted input:checked ~ .main-form-fret-muted__radio:after {
+    display: none;
+}
+
+/* Style the indicator (dot/circle) */
+.main-form-fret-muted .main-form-fret-muted__radio:after {
+    top: 7px;
+    left: 7px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
+    display: none;
+}
+
+.chord-diagram-selected {
+    background: #222;
+    width: 21px;
+    height: 21px;
+    position: absolute;
+    top: 6px;
+    left: -1rem;
+    border-radius: 50%;
+    z-index: 10;
+    text-indent: -30px;
+    line-height: 21px;
+}
+
+.main-form-button {
+    text-align: center;
+    padding-top: 3rem;
+}
+
+.site-description {
+    margin-bottom: 3rem;
 }

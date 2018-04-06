@@ -25,7 +25,20 @@ class Controller {
      * @param Array                         $request
      */
     public function getChords($chordSearcher, $request) {
-        $chordSearcher->setNotes($request['notes']);
+        $notes = [
+            $request['E-string'],
+            $request['A-string'],
+            $request['D-string'],
+            $request['G-string'],
+            $request['B-string'],
+            $request['e-string']
+        ];
+        foreach($notes as $key => $note) {
+            if($note === 'X') {
+                unset($notes[$key]);
+            }
+        }
+        $chordSearcher->setNotes($notes);
         $diagrams = $chordSearcher->trawlNeck();
         $formData = $this->buildFormData();
         require __DIR__ . '/../views/chord-display.php';
