@@ -55,6 +55,43 @@ class ChordDiagram {
         return $data;
     }
 
+    public function difficulty() {
+        return ($this->fingeredFrets()*2) + $this->spread();
+    }
+
+    public function fingeredFrets() {
+        $fingeredFrets = 0;
+        foreach($this->coordinates as $coordinate) {
+            if($coordinate[0] > 1) {
+                $fingeredFrets++;
+            }
+        }
+        return $fingeredFrets;
+    }
+
+    public function spread() {
+        $lastFret = 0;
+        $firstString = 5;
+        $lastString = 0;
+
+        foreach($this->coordinates as $coordinate) {
+            if($coordinate[0] === 1) {
+                continue;
+            }
+            if($coordinate[0] > $lastFret) {
+                $lastFret = $coordinate[0];
+            }
+            if($coordinate[1] < $firstString) {
+                $firstString = $coordinate[1];
+            }
+            if($coordinate[1] > $lastString) {
+                $lastString = $coordinate[1];
+            }
+        }
+
+        return ($lastFret - 1) * ($lastString - $firstString + 1);
+    }
+
     /**
      * Determines the strings fret position in the diagram. A string that is not played is
      * represented with position 0
