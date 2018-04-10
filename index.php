@@ -20,6 +20,12 @@ require __DIR__ . '/vendor/autoload.php';
 require __DIR__ . '/config/constants.php';
 
 /**
+ * Fire up the session
+ */
+
+session_start();
+
+/**
  * Route the request
  */
 
