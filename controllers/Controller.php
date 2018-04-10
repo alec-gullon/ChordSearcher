@@ -21,10 +21,11 @@ class Controller {
     /**
      * Creates all possible chords based on notes selected by a user
      *
-     * @param \App\Services\ChordSearcher   $chordSearcher
-     * @param Array                         $request
+     * @param \App\Services\Chords\Searcher     $chordSearcher
+     * @param \App\Services\Chords\Categorizer  $categorizer
+     * @param Array                             $request
      */
-    public function getChords($chordSearcher, $request) {
+    public function getChords($chordSearcher, $categorizer, $request) {
         $notes = [
             $request['E-string'],
             $request['A-string'],
@@ -38,8 +39,13 @@ class Controller {
                 unset($notes[$key]);
             }
         }
+
         $chordSearcher->setNotes($notes);
-        $diagrams = $chordSearcher->trawlNeck();
+        $chords = $chordSearcher->trawlNeck();
+
+        $categorizer->setChords($chords);
+        $categories = $categorizer->byDifficulty($chords);
+        
         $formData = $this->buildFormData();
         require __DIR__ . '/../views/chord-display.php';
     }
