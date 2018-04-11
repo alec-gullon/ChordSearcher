@@ -2,14 +2,30 @@
 
 namespace App\Services\Chords;
 
+/**
+ * Provides ways of categorizing an array of instances of App\Model\Chord
+ *
+ * @property array  $chords
+ */
+
 class Categorizer {
 
+    /**
+     * Array of chords provided to the Categorizer
+     *
+     * @var
+     */
     private $chords;
 
     public function setChords($chords) {
         $this->chords = $chords;
     }
 
+    /**
+     * Arranges $this->>chords according to difficulty
+     *
+     * @return array
+     */
     public function byDifficulty($chords) {
         $categorizedChords = [
             'Beginner' => [],
@@ -17,13 +33,14 @@ class Categorizer {
             'Expert' => []
         ];
         foreach($chords as $chord) {
-            if($chord->difficulty() < 24) {
-                $categorizedChords['Beginner'][] = $chord;
-            } else if ($chord->difficulty() < 32) {
-                $categorizedChords['Intermediate'][] = $chord;
+            if($chord->difficulty() < CHORD_DIFFICULTIES['EASY'] ) {
+                $key = 'Beginner';
+            } else if ($chord->difficulty() < CHORD_DIFFICULTIES['INTERMEDIATE'] ) {
+                $key = 'Intermediate';
             } else {
-                $categorizedChords['Expert'][] = $chord;
+                $key = 'Expert';
             }
+            $categorizedChords[$key][] = $chord;
         }
         return $categorizedChords;
     }

@@ -12,7 +12,7 @@ class NotesHelper {
 
     public static function barNotes($bar) {
         $notes = [];
-        foreach(OPEN_NOTES as $note) {
+        foreach($_SESSION['OPEN_NOTES'] as $note) {
             $notes[] = NotesHelper::advanceNote($note, $bar);
         }
         return $notes;

@@ -2,7 +2,7 @@
 
 namespace Tests\Model;
 
-use App\Model\ChordDiagram;
+use App\Model\Chord;
 
 use PHPUnit\Framework\TestCase;
 
@@ -17,8 +17,8 @@ class ChordDiagramTest extends TestCase {
             [1,1], [2,4], [3,3], [4,2], [5,5]
         ];
 
-        $chordDiagram = new ChordDiagram(5,$coordinates);
-        $viewData = $chordDiagram->viewData();
+        $chordDiagram = new Chord(5,$coordinates);
+        $viewData = $chordDiagram->diagramData();
 
         $this->assertEquals($viewData['strings'][4]['fret'], 2);
     }
@@ -30,7 +30,7 @@ class ChordDiagramTest extends TestCase {
      * @dataProvider providerItCalculatesDifficultyCorrectly
      */
     public function testItCalculatesDifficultyCorrectly($coordinates, $difficulty) {
-        $chordDiagram = new ChordDiagram(1,$coordinates);
+        $chordDiagram = new Chord(1,$coordinates);
 
         $this->assertEquals($chordDiagram->difficulty(), $difficulty);
     }
@@ -60,7 +60,7 @@ class ChordDiagramTest extends TestCase {
      * @dataProvider providerItCalculatesHeldFretsCorrectly
      */
     public function testItCalculatesHeldFretsCorrectly($coordinates, $heldFrets) {
-        $chordDiagram = new ChordDiagram(5,$coordinates);
+        $chordDiagram = new Chord(5,$coordinates);
         $frets = $chordDiagram->fingeredFrets();
 
         $this->assertEquals($frets, $heldFrets);
@@ -91,7 +91,7 @@ class ChordDiagramTest extends TestCase {
      * @dataProvider providerItCalculatesSpreadCorrectly
      */
     public function testItCalculatesSpreadCorrectly($coordinates, $expectedSpread) {
-        $chordDiagram = new ChordDiagram(1,$coordinates);
+        $chordDiagram = new Chord(1,$coordinates);
         $spread = $chordDiagram->spread();
 
         $this->assertEquals($spread, $expectedSpread);

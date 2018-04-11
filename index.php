@@ -14,16 +14,17 @@
 require __DIR__ . '/vendor/autoload.php';
 
 /**
- * Include some simple business logic constants
- */
-
-require __DIR__ . '/config/constants.php';
-
-/**
  * Fire up the session
  */
 
 session_start();
+
+/**
+ * Include some simple business logic constants and routes config
+ */
+
+require __DIR__ . '/config/constants.php';
+require __DIR__ . '/config/routes.php';
 
 /**
  * Route the request

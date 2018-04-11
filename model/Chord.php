@@ -3,14 +3,14 @@
 namespace App\Model;
 
 /**
- * Models a Chord diagram
+ * Models a Chord
  *
  * @property int    $bar
  * @property array  $coordinates
  *
  */
 
-class ChordDiagram {
+class Chord {
 
     /**
      * The position of the first barred fret
@@ -40,7 +40,7 @@ class ChordDiagram {
      *
      * @return array
      */
-    public function viewData() {
+    public function diagramData() {
         $data = [];
 
         $data['strings'] = [];
@@ -48,17 +48,28 @@ class ChordDiagram {
             $fret = $this->determineStringPosition($i);
             $data['strings'][] = [
                 'fret' => $fret,
-                'label'=> OPEN_NOTES[$i]['label'],
+                'label'=> $_SESSION['OPEN_NOTES'][$i]['label'],
             ];
         }
         $data['bar'] = $this->bar;
         return $data;
     }
 
+    /**
+     * The overall difficulty of the chord, as determined by the number of fingered frets
+     * and how spread out the notes are
+     *
+     * @return int
+     */
     public function difficulty() {
         return ($this->fingeredFrets()*2) + $this->spread();
     }
 
+    /**
+     * The number of frets that need to be fingered to play the chord
+     *
+     * @return int
+     */
     public function fingeredFrets() {
         $fingeredFrets = 0;
         foreach($this->coordinates as $coordinate) {
@@ -69,6 +80,12 @@ class ChordDiagram {
         return $fingeredFrets;
     }
 
+    /**
+     * How spread out the chord is, simply the size of of the "rectangle" that that
+     * chord fills out on the neck
+     *
+     * @return int
+     */
     public function spread() {
         $lastFret = 0;
         $firstString = 5;

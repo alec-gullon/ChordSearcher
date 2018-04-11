@@ -16,7 +16,7 @@ require __DIR__ . '/partials/form.php';
 
     <?php
         foreach($chords as $chord) {
-            $data = $chord->viewData();
+            $data = $chord->diagramData();
             require __DIR__ . '/molecules/chord-diagram.php';
         }
     ?>

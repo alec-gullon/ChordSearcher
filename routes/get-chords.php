@@ -5,7 +5,7 @@ use App\Controllers\Controller;
 use App\Factories\NeckSectionFactory;
 use App\Factories\NotesMatrixFactory;
 use App\Factories\StringFactory;
-use App\Factories\ChordDiagramFactory;
+use App\Factories\ChordFactory;
 
 use App\Services\Chords\Categorizer;
 use App\Services\Chords\Searcher;
@@ -16,7 +16,7 @@ use App\Services\Chords\Searcher;
 
 $neckSectionFactory = new NeckSectionFactory();
 $notesMatrixFactory = new NotesMatrixFactory();
-$chordDiagramFactory = new ChordDiagramFactory();
+$chordDiagramFactory = new ChordFactory();
 $chordSearcher = new Searcher($neckSectionFactory, $notesMatrixFactory, $chordDiagramFactory);
 
 $categorizer = new Categorizer();

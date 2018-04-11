@@ -2,7 +2,7 @@
 
 namespace App\Services\Chords;
 
-use App\Model\ChordDiagram;
+use App\Model\Chord;
 use App\Model\NotesMatrix;
 
 /**
@@ -10,7 +10,7 @@ use App\Model\NotesMatrix;
  *
  * @property    \App\Factories\NeckSectionFactory   $neckSectionFactory
  * @property    \App\Factories\NotesMatrixFactory   $notesMatrixFactory
- * @property    \App\Factories\ChordDiagramFactory  $chordDiagramFactory
+ * @property    \App\Factories\ChordFactory  $chordDiagramFactory
  * @property    array                               $notes
  */
 class Searcher {

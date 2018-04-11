@@ -1,5 +1,7 @@
 <?php
 
+use App\Helpers\RequestHelper;
+
 $route = $_SERVER['REQUEST_URI'];
 $route = explode('/',$route)[1];
 
@@ -9,6 +11,10 @@ $route = explode('/',$route)[1];
 
 if($route === '') {
     $route = 'home';
+}
+
+if( RequestHelper::requestType($route) === 'POST' && !RequestHelper::isPost() ) {
+    $route = '404';
 }
 
 $directory = __DIR__ . '/' . $route . '.php';

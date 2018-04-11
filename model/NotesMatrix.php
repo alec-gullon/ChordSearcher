@@ -12,7 +12,8 @@ namespace App\Model;
  * @property array  $maximalCoordinateSets
  * @property array  $augmentedNotes
  *
- * @todo this class is getting a bit bloated. Coordinate set is definitely a candidate for a new class...
+ * @todo this class is getting a bit bloated. Decisions about the playability of a chord should be deferred
+ * @todo to chord itself...
  */
 
 class NotesMatrix {
@@ -63,7 +64,7 @@ class NotesMatrix {
      * @param array    $notes
      */
     public function __construct($matrix, $notes) {
-        foreach(OPEN_NOTES as $note) {
+        foreach($_SESSION['OPEN_NOTES'] as $note) {
             $this->augmentedNotes[1][] = $note['note'];
         }
         for($i = 2; $i <= count($matrix)+1; $i++) {

@@ -31,7 +31,7 @@ class Fret {
 
     public function __construct($bar) {
         $this->bar = $bar;
-        foreach(OPEN_NOTES as $note) {
+        foreach($_SESSION['OPEN_NOTES'] as $note) {
             $this->notes[] = NotesHelper::advanceNote($note['note'], $bar);
         }
     }

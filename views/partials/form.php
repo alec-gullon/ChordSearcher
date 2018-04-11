@@ -17,7 +17,12 @@
             of different voicings will be generated for you.</p>
         <p>The application is in the early stage of its life, but plenty more work and updates will be coming soon!</p>
     </div>
-    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <form action="/set-open-notes" method="POST">
+            <h3>Change Open Notes</h3>
+
+        </form>
+    </div>
 </div>
 
 <form action="/get-chords/" method="GET" class="main-form">
@@ -33,7 +38,7 @@
                     <label class="main-form-fret">
                         <input type="radio"
                                name="<?php echo $string['label']; ?>-string"
-                               id="<?php echo $string['label']; ?>"
+                               id="<?php echo $string['label'] . '-' . $i; ?>"
                                value="<?php echo $string['notes'][$i]; ?>" />
                         <span class="main-form-fret__radio"><?php echo $string['notes'][$i]; ?></span>
                     </label>
@@ -41,7 +46,7 @@
                 <label class="main-form-fret-muted">
                     <input  type="radio"
                             name="<?php echo $string['label']; ?>-string"
-                            id="<?php echo $string['label']; ?>"
+                            id="<?php echo $string['label'] . '-mute'; ?>"
                             value="X"
                             checked="checked" />
                     <span class="main-form-fret-muted__radio">X</span>
